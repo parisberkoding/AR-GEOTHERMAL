@@ -23,52 +23,22 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        html, body {
-            margin: 0 !important;
-            padding: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            overflow: hidden !important;
-            position: fixed !important;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
             background: #000;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-        }
-
-        /* 🔧 FIX: Force AR Scene to be FULL SCREEN */
         #ar-scene {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            z-index: 1 !important;
-        }
-
-        /* 🔧 FIX: Force video and canvas to cover entire screen */
-        #ar-scene canvas,
-        #ar-scene video {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            object-fit: cover !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        /* Remove any A-Frame default styles that might interfere */
-        .a-canvas {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         }
 
         #ui-overlay {
@@ -206,7 +176,7 @@
         }
 
         #scene-card {
-            position: fixed;
+            position: absolute;
             bottom: 140px;
             left: 50%;
             transform: translateX(-50%);
@@ -252,7 +222,7 @@
         }
 
         #nav-controls {
-            position: fixed;
+            position: absolute;
             bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
@@ -286,7 +256,7 @@
         }
 
         #status-bar {
-            position: fixed;
+            position: absolute;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
@@ -321,7 +291,7 @@
         }
 
         #audio-indicator {
-            position: fixed;
+            position: absolute;
             top: 80px;
             right: 20px;
             width: 40px;
@@ -356,17 +326,16 @@
     </style>
 </head>
 <body>
-    <!-- AR Scene with Full Screen Fix -->
+    <!-- AR Scene -->
     <a-scene
         id="ar-scene"
         embedded
-        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; trackingMethod: best;"
+        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
         vr-mode-ui="enabled: false"
         renderer="logarithmicDepthBuffer: true; precision: medium; antialias: true; alpha: true;"
-        loading-screen="enabled: false"
-        device-orientation-permission-ui="enabled: false">
+        loading-screen="enabled: false">
         
-        <a-camera gps-camera rotation-reader look-controls-enabled="false"></a-camera>
+        <a-camera gps-camera rotation-reader></a-camera>
         
         <!-- Marker Hiro -->
         <a-marker
@@ -376,26 +345,30 @@
             emitevents="true"
             cursor="fuse: false; rayOrigin: mouse;">
             
-            <!-- Model container dengan scale yang lebih kecil -->
+            <!-- 🔧 FIX: Model dengan scale yang lebih kecil dan positioning yang benar -->
             <a-entity id="model-container" position="0 0 0">
-                <!-- Main geothermal plant -->
+                <!-- Main geothermal plant - Scale diperkecil -->
                 <a-entity
                     id="full-plant-model"
                     gltf-model="assets/FullVersion.glb"
-                    position="0 -0.3 0"
+                    position="0 -0.5 0"
                     rotation="-90 0 0"
-                    scale="0.15 0.15 0.15"
-                    visible="true">
+                    scale="0.3 0.3 0.3"
+                    visible="true"
+                    animation__appear="property: scale; from: 0 0 0; to: 0.3 0.3 0.3; dur: 800; easing: easeOutBack; startEvents: markerFound"
+                    animation__disappear="property: scale; to: 0 0 0; dur: 300; easing: easeInQuad; startEvents: markerLost">
                 </a-entity>
                 
-                <!-- Animated turbine fan -->
+                <!-- Animated turbine fan - Scale diperkecil -->
                 <a-entity
                     id="turbine-fan-model"
                     gltf-model="assets/Turbine_Fan.glb"
-                    position="0 -0.2 0"
+                    position="0 -0.3 0"
                     rotation="-90 0 0"
-                    scale="0.15 0.15 0.15"
-                    visible="false">
+                    scale="0.3 0.3 0.3"
+                    visible="false"
+                    animation__appear="property: scale; from: 0 0 0; to: 0.3 0.3 0.3; dur: 800; easing: easeOutBack"
+                    animation__disappear="property: scale; to: 0 0 0; dur: 300; easing: easeInQuad">
                 </a-entity>
             </a-entity>
         </a-marker>
@@ -461,8 +434,7 @@
                 isSimulationStarted: false,
                 audioPlaying: false,
                 totalScenes: 0,
-                modelsLoaded: false,
-                userInteracted: false
+                modelsLoaded: false
             },
 
             elements: {},
@@ -489,19 +461,11 @@
                 
                 this.setupMarkerListeners();
                 this.setupModelLoadListeners();
-                this.forceFullScreen();
                 
                 setTimeout(() => {
                     this.hideLoading();
                     this.showScannerInstructions();
-                    this.forceFullScreen();
                 }, 2000);
-                
-                // Force fullscreen on resize
-                window.addEventListener('resize', () => this.forceFullScreen());
-                window.addEventListener('orientationchange', () => {
-                    setTimeout(() => this.forceFullScreen(), 300);
-                });
             },
 
             cacheElements() {
@@ -523,55 +487,12 @@
                     fullPlantModel: document.getElementById('full-plant-model'),
                     turbineFanModel: document.getElementById('turbine-fan-model'),
                     btnPrev: document.querySelector('.btn-prev'),
-                    btnNext: document.querySelector('.btn-next'),
-                    scene: document.getElementById('ar-scene')
+                    btnNext: document.querySelector('.btn-next')
                 };
             },
 
-            // 🔧 FIX: Force camera to be full screen
-            forceFullScreen() {
-                try {
-                    const width = window.innerWidth;
-                    const height = window.innerHeight;
-                    
-                    // Get all video and canvas elements
-                    const videos = document.querySelectorAll('video');
-                    const canvases = document.querySelectorAll('canvas');
-                    
-                    videos.forEach(video => {
-                        video.style.cssText = `
-                            position: fixed !important;
-                            top: 0 !important;
-                            left: 0 !important;
-                            width: ${width}px !important;
-                            height: ${height}px !important;
-                            object-fit: cover !important;
-                            margin: 0 !important;
-                            padding: 0 !important;
-                        `;
-                    });
-                    
-                    canvases.forEach(canvas => {
-                        canvas.style.cssText = `
-                            position: fixed !important;
-                            top: 0 !important;
-                            left: 0 !important;
-                            width: ${width}px !important;
-                            height: ${height}px !important;
-                            margin: 0 !important;
-                            padding: 0 !important;
-                        `;
-                        canvas.width = width;
-                        canvas.height = height;
-                    });
-                    
-                    console.log('📐 Forced full screen:', width, 'x', height);
-                } catch (error) {
-                    console.warn('Fullscreen error:', error);
-                }
-            },
-
             setupModelLoadListeners() {
+                // Listen for model load events
                 this.elements.fullPlantModel.addEventListener('model-loaded', () => {
                     console.log('✅ Full plant model loaded');
                     this.state.modelsLoaded = true;
@@ -613,12 +534,8 @@
                 if (!this.state.isSimulationStarted) {
                     this.elements.startButton.classList.add('visible');
                 } else {
+                    // 🔧 FIX: Show current scene model immediately
                     this.showCurrentSceneModels();
-                    
-                    // 🔧 FIX: Auto-play audio saat marker terdeteksi
-                    if (this.currentAudio && this.state.userInteracted) {
-                        this.currentAudio.play().catch(e => console.warn('Auto-play blocked:', e));
-                    }
                 }
             },
 
@@ -632,23 +549,16 @@
                     this.elements.startButton.classList.remove('visible');
                     this.elements.scannerInstructions.classList.add('visible');
                 }
-                
-                // Pause audio saat marker hilang
-                if (this.currentAudio) {
-                    this.currentAudio.pause();
-                }
             },
 
             startSimulation() {
                 if (!this.state.isMarkerVisible) {
-                    alert('Marker belum terdeteksi! Arahkan kamera ke marker Hiro terlebih dahulu.');
+                    console.warn('⚠️ Cannot start: marker not visible');
                     return;
                 }
                 
                 console.log('🎬 Starting simulation...');
                 
-                // Mark user interaction for audio autoplay
-                this.state.userInteracted = true;
                 this.state.isSimulationStarted = true;
                 
                 this.elements.startButton.classList.remove('visible');
@@ -678,7 +588,6 @@
                     this.updateCamera(scene.camera);
                 }
                 
-                // 🔧 FIX: Auto-play audio dengan proper handling
                 this.playAudio(scene.audio);
                 this.updateNavButtons();
             },
@@ -706,9 +615,11 @@
             },
 
             updateModels(scene) {
+                // Hide all models first
                 this.elements.fullPlantModel.setAttribute('visible', false);
                 this.elements.turbineFanModel.setAttribute('visible', false);
                 
+                // Show models based on scene
                 if (scene.components && scene.components.length > 0) {
                     scene.components.forEach(component => {
                         if (component.name === 'full-geothermal-plant') {
@@ -780,39 +691,26 @@
                 });
             },
 
-            // 🔧 FIX: Auto-play audio dengan proper error handling
             playAudio(audioPath) {
-                if (!audioPath) {
-                    console.warn('⚠️ No audio path provided');
-                    return;
-                }
+                if (!audioPath) return;
                 
-                // Stop previous audio
-                this.stopAudio();
-                
-                // Create new audio
                 this.currentAudio = new Audio(audioPath);
-                this.currentAudio.volume = 0.8;
+                this.elements.audioIndicator.classList.add('visible');
                 
-                // Auto-play jika user sudah interact dan marker visible
-                if (this.state.userInteracted && this.state.isMarkerVisible) {
-                    this.elements.audioIndicator.classList.add('visible');
-                    
-                    this.currentAudio.play()
-                        .then(() => {
-                            console.log('🔊 Audio playing:', audioPath);
-                            this.state.audioPlaying = true;
-                        })
-                        .catch(error => {
-                            console.error('❌ Audio playback failed:', error);
-                            this.elements.audioIndicator.classList.remove('visible');
-                        });
-                    
-                    this.currentAudio.addEventListener('ended', () => {
+                this.currentAudio.play()
+                    .then(() => {
+                        console.log('🔊 Audio playing:', audioPath);
+                        this.state.audioPlaying = true;
+                    })
+                    .catch(error => {
+                        console.error('❌ Audio failed:', error);
                         this.elements.audioIndicator.classList.remove('visible');
-                        this.state.audioPlaying = false;
                     });
-                }
+                
+                this.currentAudio.addEventListener('ended', () => {
+                    this.elements.audioIndicator.classList.remove('visible');
+                    this.state.audioPlaying = false;
+                });
             },
 
             stopAudio() {
@@ -854,9 +752,8 @@
             }
         };
 
-        // Initialize on DOM ready
         document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => ARController.init(), 500);
+            setTimeout(() => ARController.init(), 100);
         });
     </script>
 </body>
