@@ -17,7 +17,7 @@ window.SCENE_CONFIG = [
         id: 1,
         title: "Welcome",
         subtitle: "Energi Bersih dari Perut Bumi",
-        audio: "assets/intro.mp3",
+        audio: "assets/audio/intro.mp3",
         
         // Scene description for info card
         description: "Selamat datang di Geothermal AR! Energi panas bumi adalah sumber energi terbarukan yang dihasilkan dari panas alami bumi. Mari kita jelajahi bagaimana energi ini dimanfaatkan untuk menghasilkan listrik ramah lingkungan.",
@@ -46,7 +46,7 @@ window.SCENE_CONFIG = [
         id: 2,
         title: "Lapisan Bumi",
         subtitle: "Dapur Panas di Perut Bumi",
-        audio: "assets/earth_layer.mp3",
+        audio: "assets/audio/earth_layer.mp3",
         
         description: "Di kedalaman bumi terdapat lapisan-lapisan dengan suhu sangat tinggi. Kerak bumi, mantel, dan inti bumi menghasilkan panas luar biasa. Suhu inti bumi mencapai 5000°C - lebih panas dari permukaan matahari!",
         
@@ -74,7 +74,7 @@ window.SCENE_CONFIG = [
         id: 3,
         title: "Turbin Pembangkit",
         subtitle: "Mengubah Uap Menjadi Listrik",
-        audio: "assets/turbine.mp3",
+        audio: "assets/audio/turbine.mp3",
         
         description: "Uap panas bumi bertekanan tinggi menggerakkan bilah turbin dengan kecepatan tinggi. Putaran turbin menggerakkan generator yang mengubah energi kinetik menjadi energi listrik. Satu turbin dapat menghasilkan hingga 100 megawatt listrik!",
         
@@ -117,7 +117,7 @@ window.SCENE_CONFIG = [
         id: 4,
         title: "Menara Pendingin",
         subtitle: "Sistem Pendingin & Kondensasi",
-        audio: "assets/cooling_tower.mp3",
+        audio: "assets/audio/cooling_tower.mp3",
         
         description: "Setelah melewati turbin, uap panas perlu didinginkan agar dapat digunakan kembali. Cooling tower menggunakan udara alami untuk mengondensasi uap menjadi air. Sistem ini memastikan tidak ada limbah dan menciptakan siklus tertutup yang ramah lingkungan.",
         
@@ -145,7 +145,7 @@ window.SCENE_CONFIG = [
         id: 5,
         title: "Masa Depan Hijau",
         subtitle: "Energi Berkelanjutan untuk Generasi Mendatang",
-        audio: "assets/outro.mp3",
+        audio: "assets/audio/outro.mp3",
         
         description: "Pembangkit listrik tenaga panas bumi adalah solusi energi bersih masa depan. Tanpa emisi karbon, tersedia 24/7, dan tidak bergantung cuaca. Indonesia memiliki 40% potensi panas bumi dunia - saatnya memanfaatkan energi dari perut bumi untuk masa depan berkelanjutan!",
         

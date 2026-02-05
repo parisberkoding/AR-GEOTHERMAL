@@ -16,9 +16,6 @@
     <script src="js/scene-config.js"></script>
     
     <style>
-        /* ===================================================================
-           RESET & BASE STYLES
-           =================================================================== */
         * {
             margin: 0;
             padding: 0;
@@ -26,55 +23,24 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    position: fixed;
-    background: #000;
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
 
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-}
+        #ar-scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
 
-        /* ===================================================================
-           AR SCENE CONTAINER
-           =================================================================== */
-#ar-scene {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    z-index: 1;
-    overflow: hidden;
-}
-
-/* Force A-Frame canvas to be full screen */
-#ar-scene canvas {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-}
-
-/* Force video element (camera feed) to be full screen */
-#ar-scene video {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    object-fit: cover !important;
-}
-
-        /* ===================================================================
-           UI OVERLAY CONTAINER
-           =================================================================== */
         #ui-overlay {
             position: fixed;
             top: 0;
@@ -89,9 +55,6 @@ body {
             pointer-events: auto;
         }
 
-        /* ===================================================================
-           LOADING SCREEN
-           =================================================================== */
         #loading-screen {
             position: fixed;
             top: 0;
@@ -135,7 +98,6 @@ body {
             font-size: 24px;
             font-weight: 700;
             margin-bottom: 8px;
-            letter-spacing: -0.5px;
         }
 
         .loader-content p {
@@ -143,9 +105,6 @@ body {
             opacity: 0.7;
         }
 
-        /* ===================================================================
-           SCANNER INSTRUCTIONS
-           =================================================================== */
         #scanner-instructions {
             position: absolute;
             top: 50%;
@@ -164,12 +123,6 @@ body {
 
         #scanner-instructions.visible {
             display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -45%); }
-            to { opacity: 1; transform: translate(-50%, -50%); }
         }
 
         .scanner-icon {
@@ -178,25 +131,12 @@ body {
             margin: 0 auto 16px;
             border: 3px solid #00d9ff;
             border-radius: 12px;
-            position: relative;
             animation: pulse 2s ease-in-out infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-        }
-
-        .scanner-icon::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
-            background: #00d9ff;
-            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         #scanner-instructions h3 {
@@ -211,26 +151,12 @@ body {
             line-height: 1.4;
         }
 
-        /* ===================================================================
-           START BUTTON
-           =================================================================== */
         #start-button {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             display: none;
-            animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            z-index: 999; /* Ensure button is on top */
-        }
-
-        #start-button.visible {
-            display: block !important;
-        }
-
-        @keyframes scaleIn {
-            from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
-            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
         }
 
         #start-button.visible {
@@ -243,35 +169,104 @@ body {
             border: none;
             padding: 18px 48px;
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 700;
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 8px 24px rgba(0, 217, 255, 0.4);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            text-transform: none;
-            letter-spacing: 0.3px;
         }
 
-        .btn-start:active {
-            transform: scale(0.95);
-            box-shadow: 0 4px 12px rgba(0, 217, 255, 0.3);
+        #scene-card {
+            position: absolute;
+            bottom: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            background: rgba(26, 26, 46, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            color: white;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
 
-        /* ===================================================================
-           STATUS BAR (TOP)
-           =================================================================== */
-        #status-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.7);
+        #scene-card.visible {
+            display: block;
+        }
+
+        .scene-progress {
+            font-size: 12px;
+            color: #00d9ff;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .scene-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .scene-subtitle {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-bottom: 12px;
+        }
+
+        .scene-description {
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        #nav-controls {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            gap: 12px;
+        }
+
+        #nav-controls.visible {
+            display: flex;
+        }
+
+        .btn-nav {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 14px 32px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
             backdrop-filter: blur(10px);
-            padding: 12px 20px;
+        }
+
+        .btn-nav.btn-next {
+            background: linear-gradient(135deg, #00d9ff 0%, #0099cc 100%);
+            border-color: transparent;
+        }
+
+        .btn-nav:disabled {
+            opacity: 0.4;
+        }
+
+        #status-bar {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             display: none;
             align-items: center;
-            justify-content: space-between;
-            z-index: 100;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
         }
 
         #status-bar.visible {
@@ -279,333 +274,108 @@ body {
         }
 
         .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .status-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #00d9ff;
-            animation: blink 1.5s ease-in-out infinite;
+            background: #ff4444;
         }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+        .status-indicator.active {
+            background: #00ff88;
         }
 
-        .scene-counter {
+        .status-text {
             color: white;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 6px 12px;
-            border-radius: 20px;
         }
 
-        /* ===================================================================
-           INFO CARD (SCENE DESCRIPTION)
-           =================================================================== */
-        #info-card {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 500px;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 20px;
-            color: white;
-            display: none;
-            z-index: 50;
-        }
-
-        #info-card.visible {
-            display: block;
-            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        @keyframes slideUp {
-            from { transform: translateX(-50%) translateY(30px); opacity: 0; }
-            to { transform: translateX(-50%) translateY(0); opacity: 1; }
-        }
-
-        .info-header {
-            margin-bottom: 12px;
-        }
-
-        .info-header h2 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            color: #00d9ff;
-        }
-
-        .info-header p {
-            font-size: 14px;
-            opacity: 0.7;
-        }
-
-        .info-description {
-            font-size: 14px;
-            line-height: 1.6;
-            opacity: 0.9;
-        }
-
-        /* ===================================================================
-           NAVIGATION CONTROLS (BOTTOM)
-           =================================================================== */
-        #nav-controls {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: none;
-            gap: 12px;
-            z-index: 100;
-        }
-
-        #nav-controls.visible {
-            display: flex;
-        }
-
-        .nav-btn {
-            background: rgba(0, 217, 255, 0.2);
-            border: 2px solid #00d9ff;
-            color: white;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .nav-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .nav-btn:not(:disabled):active {
-            transform: scale(0.9);
-            background: rgba(0, 217, 255, 0.4);
-        }
-
-        /* ===================================================================
-           AUDIO INDICATOR
-           =================================================================== */
         #audio-indicator {
-            position: fixed;
-            top: 70px;
+            position: absolute;
+            top: 80px;
             right: 20px;
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             background: rgba(0, 217, 255, 0.2);
-            border: 2px solid #00d9ff;
             border-radius: 50%;
             display: none;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(10px);
-            z-index: 100;
         }
 
         #audio-indicator.visible {
             display: flex;
         }
 
-        .audio-icon {
-            width: 24px;
-            height: 24px;
-            position: relative;
-        }
-
-        .audio-icon::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 8px;
-            height: 12px;
+        .audio-wave {
+            width: 4px;
+            height: 16px;
             background: #00d9ff;
-            border-radius: 2px;
-        }
-
-        .audio-icon::after {
-            content: '';
-            position: absolute;
-            left: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 8px 0 8px 12px;
-            border-color: transparent transparent transparent #00d9ff;
-        }
-
-        .audio-waves {
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            gap: 3px;
-        }
-
-        .wave {
-            width: 2px;
-            height: 8px;
-            background: #00d9ff;
+            margin: 0 2px;
             border-radius: 2px;
             animation: wave 0.8s ease-in-out infinite;
         }
 
-        .wave:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .wave:nth-child(3) {
-            animation-delay: 0.4s;
-        }
+        .audio-wave:nth-child(2) { animation-delay: 0.1s; }
+        .audio-wave:nth-child(3) { animation-delay: 0.2s; }
 
         @keyframes wave {
-            0%, 100% { height: 8px; }
-            50% { height: 16px; }
+            0%, 100% { height: 16px; }
+            50% { height: 8px; }
         }
-
-        /* ===================================================================
-           MOBILE OPTIMIZATIONS
-           =================================================================== */
-        @media (max-width: 480px) {
-            .btn-start {
-                padding: 16px 40px;
-                font-size: 16px;
-            }
-
-            #info-card {
-                bottom: 90px;
-                padding: 16px;
-            }
-
-            .info-header h2 {
-                font-size: 18px;
-            }
-
-            .nav-btn {
-                width: 52px;
-                height: 52px;
-                font-size: 22px;
-            }
-        }
-
-        /* ===================================================================
-   MOBILE CAMERA FIX - Force full screen on all devices
-   =================================================================== */
-@supports (-webkit-touch-callout: none) {
-    /* iOS Safari specific fixes */
-    #ar-scene,
-    #ar-scene canvas,
-    #ar-scene video {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100vw !important;
-        height: 100vh !important;
-        min-height: -webkit-fill-available !important;
-    }
-    
-    body {
-        height: -webkit-fill-available;
-    }
-}
-
-/* Android Chrome fixes */
-@media screen and (max-width: 768px) {
-    #ar-scene {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        width: 100vw !important;
-        height: 100vh !important;
-    }
-    
-    #ar-scene canvas,
-    #ar-scene video {
-        position: fixed !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        min-width: 100vw !important;
-        min-height: 100vh !important;
-        width: auto !important;
-        height: auto !important;
-        object-fit: cover !important;
-    }
-}
     </style>
 </head>
 <body>
-    <!-- ====================================================================
-         AR SCENE (A-Frame + AR.js)
-         ==================================================================== -->
+    <!-- AR Scene -->
     <a-scene
         id="ar-scene"
         embedded
-        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; trackingMethod: best; cameraParametersUrl: data:text/plain;charset=utf-8,;"
+        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
         vr-mode-ui="enabled: false"
-        renderer="logarithmicDepthBuffer: true; precision: medium; antialias: true; alpha: true; colorManagement: true;"
-        device-orientation-permission-ui="enabled: false"
+        renderer="logarithmicDepthBuffer: true; precision: medium; antialias: true; alpha: true;"
         loading-screen="enabled: false">
+        
+        <a-camera gps-camera rotation-reader></a-camera>
+        
+        <!-- Marker Hiro -->
+        <a-marker
+            id="main-marker"
+            preset="hiro"
+            raycaster="objects: .clickable"
+            emitevents="true"
+            cursor="fuse: false; rayOrigin: mouse;">
             
-        <!-- AR Marker (Hiro) -->
-        <a-marker preset="hiro" id="hiro-marker" emitevents="true" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
-            <!-- Full Geothermal Plant Model -->
-            <a-entity
-                id="full-plant-model"
-                gltf-model="assets/FullVersion.glb"
-                position="0 0 0"
-                rotation="0 0 0"
-                scale="1 1 1"
-                visible="false">
-            </a-entity>
-            
-            <!-- Turbine Fan Model (Animated) -->
-            <a-entity
-                id="turbine-fan-model"
-                gltf-model="assets/Turbine_Fan.glb"
-                position="0 0 0"
-                rotation="0 0 0"
-                scale="1 1 1"
-                visible="false">
+            <!-- 🔧 FIX: Model dengan scale yang lebih kecil dan positioning yang benar -->
+            <a-entity id="model-container" position="0 0 0">
+                <!-- Main geothermal plant - Scale diperkecil -->
+                <a-entity
+                    id="full-plant-model"
+                    gltf-model="assets/FullVersion.glb"
+                    position="0 -0.5 0"
+                    rotation="-90 0 0"
+                    scale="0.3 0.3 0.3"
+                    visible="true"
+                    animation__appear="property: scale; from: 0 0 0; to: 0.3 0.3 0.3; dur: 800; easing: easeOutBack; startEvents: markerFound"
+                    animation__disappear="property: scale; to: 0 0 0; dur: 300; easing: easeInQuad; startEvents: markerLost">
+                </a-entity>
+                
+                <!-- Animated turbine fan - Scale diperkecil -->
+                <a-entity
+                    id="turbine-fan-model"
+                    gltf-model="assets/Turbine_Fan.glb"
+                    position="0 -0.3 0"
+                    rotation="-90 0 0"
+                    scale="0.3 0.3 0.3"
+                    visible="false"
+                    animation__appear="property: scale; from: 0 0 0; to: 0.3 0.3 0.3; dur: 800; easing: easeOutBack"
+                    animation__disappear="property: scale; to: 0 0 0; dur: 300; easing: easeInQuad">
+                </a-entity>
             </a-entity>
         </a-marker>
-
-        <!-- Camera -->
-        <a-entity camera></a-entity>
     </a-scene>
 
-    <!-- ====================================================================
-         UI OVERLAY LAYER
-         ==================================================================== -->
+    <!-- UI Overlay -->
     <div id="ui-overlay">
-        <!-- Loading Screen -->
         <div id="loading-screen">
             <div class="loader-content">
                 <div class="loader-icon"></div>
@@ -614,468 +384,245 @@ body {
             </div>
         </div>
 
-        <!-- Scanner Instructions -->
         <div id="scanner-instructions">
             <div class="scanner-icon"></div>
-            <h3>Arahkan Kamera ke Marker</h3>
-            <p>Temukan dan scan marker Hiro untuk memulai</p>
+            <h3>Scan Marker</h3>
+            <p>Arahkan kamera ke marker Hiro untuk memulai</p>
         </div>
 
-        <!-- Start Button (shown when marker detected) -->
         <div id="start-button">
-            <button class="btn-start">🚀 Mulai Simulasi</button>
+            <button class="btn-start" onclick="ARController.startSimulation()">
+                Mulai Simulasi
+            </button>
         </div>
 
-        <!-- Status Bar (top) -->
         <div id="status-bar">
-            <div class="status-indicator">
-                <div class="status-dot"></div>
-                <span>Marker Terdeteksi</span>
-            </div>
-            <div class="scene-counter">
-                <span id="scene-number">1</span> / <span id="total-scenes">5</span>
-            </div>
+            <div class="status-indicator" id="marker-status"></div>
+            <span class="status-text" id="marker-text">Mencari marker...</span>
         </div>
 
-        <!-- Info Card (scene description) -->
-        <div id="info-card">
-            <div class="info-header">
-                <h2 id="info-title">Welcome</h2>
-                <p id="info-subtitle">Energi Bersih dari Perut Bumi</p>
-            </div>
-            <div class="info-description" id="info-description">
-                Selamat datang di Geothermal AR...
-            </div>
+        <div id="scene-card">
+            <div class="scene-progress" id="scene-progress">SCENE 1 / 5</div>
+            <h2 class="scene-title" id="scene-title">Welcome</h2>
+            <p class="scene-subtitle" id="scene-subtitle">Energi Bersih dari Perut Bumi</p>
+            <p class="scene-description" id="scene-description">
+                Selamat datang di Geothermal AR!
+            </p>
         </div>
 
-        <!-- Navigation Controls (bottom) -->
         <div id="nav-controls">
-            <button class="nav-btn" id="btn-prev">◀</button>
-            <button class="nav-btn" id="btn-next">▶</button>
+            <button class="btn-nav btn-prev" onclick="ARController.previousScene()">
+                Sebelumnya
+            </button>
+            <button class="btn-nav btn-next" onclick="ARController.nextScene()">
+                Selanjutnya
+            </button>
         </div>
 
-        <!-- Audio Indicator -->
         <div id="audio-indicator">
-            <div class="audio-icon">
-                <div class="audio-waves">
-                    <div class="wave"></div>
-                    <div class="wave"></div>
-                    <div class="wave"></div>
-                </div>
-            </div>
+            <div class="audio-wave"></div>
+            <div class="audio-wave"></div>
+            <div class="audio-wave"></div>
         </div>
     </div>
 
-    <!-- ====================================================================
-         JAVASCRIPT APPLICATION LOGIC
-         ==================================================================== -->
     <script>
-        // ====================================================================
-        // AUDIO MANAGER - Mobile-friendly audio handling
-        // ====================================================================
-        const AudioManager = {
-            unlocked: false,
-            current: null,
-
-            /**
-             * Unlock audio context on user gesture (required for mobile browsers)
-             */
-            unlock() {
-                if (this.unlocked) return;
-                
-                const audio = new Audio();
-                audio.muted = true;
-                audio.setAttribute('playsinline', '');
-                audio.preload = 'auto';
-                
-                audio.play().then(() => {
-                    audio.pause();
-                    audio.muted = false;
-                    this.unlocked = true;
-                    console.log('✅ Audio unlocked');
-                }).catch(err => {
-                    console.warn('⚠️ Audio unlock failed:', err);
-                });
-            },
-
-            /**
-             * Play audio file with mobile-friendly settings
-             */
-            play(src) {
-                if (!src) {
-                    console.warn('⚠️ No audio source provided');
-                    return;
-                }
-                
-                this.stop();
-                
-                this.current = new Audio(src);
-                this.current.preload = 'auto';
-                this.current.setAttribute('playsinline', '');
-                
-                this.current.play()
-                    .then(() => {
-                        console.log('🔊 Audio playing:', src);
-                    })
-                    .catch(err => {
-                        console.error('❌ Audio playback failed:', err);
-                    });
-            },
-
-            /**
-             * Stop current audio
-             */
-            stop() {
-                if (this.current) {
-                    this.current.pause();
-                    this.current.currentTime = 0;
-                    this.current = null;
-                }
-            }
-        };
-
-        // ====================================================================
-        // AR CONTROLLER - Main application logic
-        // ====================================================================
         const ARController = {
-            // ----------------------------------------------------------------
-            // STATE
-            // ----------------------------------------------------------------
             state: {
-                markerFound: false,
-                simulationStarted: false,
                 currentSceneIndex: 0,
+                isMarkerVisible: false,
+                isSimulationStarted: false,
+                audioPlaying: false,
                 totalScenes: 0,
-                audioPlaying: false
+                modelsLoaded: false
             },
 
-            // ----------------------------------------------------------------
-            // CACHED DOM ELEMENTS
-            // ----------------------------------------------------------------
-            elements: {
-                loadingScreen: null,
-                scannerInstructions: null,
-                startButton: null,
-                statusBar: null,
-                infoCard: null,
-                navControls: null,
-                audioIndicator: null,
-                sceneNumber: null,
-                totalScenesText: null,
-                infoTitle: null,
-                infoSubtitle: null,
-                infoDescription: null,
-                btnPrev: null,
-                btnNext: null,
-                marker: null,
-                fullPlantModel: null,
-                turbineFanModel: null
-            },
-
+            elements: {},
             currentAudio: null,
 
-            // ----------------------------------------------------------------
-            // INITIALIZE APPLICATION
-            // ----------------------------------------------------------------
             init() {
-                console.log('🚀 Initializing Geothermal AR...');
+                console.log('🚀 Initializing AR Controller...');
                 
-                // Validate scene configuration
-                if (!window.SCENE_CONFIG || window.SCENE_CONFIG.length === 0) {
-                    console.error('❌ Scene configuration not loaded!');
+                if (!window.SCENE_CONFIG || !Array.isArray(window.SCENE_CONFIG) || window.SCENE_CONFIG.length === 0) {
+                    console.error('❌ SCENE_CONFIG error!');
+                    alert('Configuration error! Check scene-config.js');
                     return;
                 }
                 
-                // Cache DOM elements
                 this.cacheElements();
-
-                // Force canvas resize for mobile
-    this.forceCanvasResize();
-    
-    // Re-resize on orientation change
-    window.addEventListener('orientationchange', () => {
-        setTimeout(() => {
-            this.forceCanvasResize();
-        }, 300);
-    });
-    
-    window.addEventListener('resize', () => {
-        this.forceCanvasResize();
-    });
                 
-                // Wait for A-Frame scene to fully load before setting up events
-                const scene = document.querySelector('a-scene');
-                if (scene.hasLoaded) {
-                    this.onSceneLoaded();
-                } else {
-                    scene.addEventListener('loaded', () => {
-                        this.onSceneLoaded();
-                    });
+                if (!this.elements.marker) {
+                    console.error('❌ Required elements not found!');
+                    return;
                 }
-            },
-
-            onSceneLoaded() {
-                console.log('✅ A-Frame scene loaded');
                 
-                // Initialize state
                 this.state.totalScenes = window.SCENE_CONFIG.length;
-                this.elements.totalScenesText.textContent = this.state.totalScenes;
+                console.log(`✅ Loaded ${this.state.totalScenes} scenes`);
                 
-                // Setup event listeners
-                this.setupEventListeners();
+                this.setupMarkerListeners();
+                this.setupModelLoadListeners();
                 
-                // Hide loading screen after initialization
                 setTimeout(() => {
                     this.hideLoading();
                     this.showScannerInstructions();
-                }, 1000);
-                
-                console.log('✅ AR Controller initialized');
+                }, 2000);
             },
 
-            // ----------------------------------------------------------------
-            // CACHE DOM ELEMENTS
-            // ----------------------------------------------------------------
             cacheElements() {
                 this.elements = {
                     loadingScreen: document.getElementById('loading-screen'),
                     scannerInstructions: document.getElementById('scanner-instructions'),
                     startButton: document.getElementById('start-button'),
-                    statusBar: document.getElementById('status-bar'),
-                    infoCard: document.getElementById('info-card'),
+                    sceneCard: document.getElementById('scene-card'),
                     navControls: document.getElementById('nav-controls'),
+                    statusBar: document.getElementById('status-bar'),
                     audioIndicator: document.getElementById('audio-indicator'),
-                    sceneNumber: document.getElementById('scene-number'),
-                    totalScenesText: document.getElementById('total-scenes'),
-                    infoTitle: document.getElementById('info-title'),
-                    infoSubtitle: document.getElementById('info-subtitle'),
-                    infoDescription: document.getElementById('info-description'),
-                    btnPrev: document.getElementById('btn-prev'),
-                    btnNext: document.getElementById('btn-next'),
-                    marker: document.getElementById('hiro-marker'),
+                    sceneProgress: document.getElementById('scene-progress'),
+                    sceneTitle: document.getElementById('scene-title'),
+                    sceneSubtitle: document.getElementById('scene-subtitle'),
+                    sceneDescription: document.getElementById('scene-description'),
+                    markerStatus: document.getElementById('marker-status'),
+                    markerText: document.getElementById('marker-text'),
+                    marker: document.getElementById('main-marker'),
                     fullPlantModel: document.getElementById('full-plant-model'),
-                    turbineFanModel: document.getElementById('turbine-fan-model')
+                    turbineFanModel: document.getElementById('turbine-fan-model'),
+                    btnPrev: document.querySelector('.btn-prev'),
+                    btnNext: document.querySelector('.btn-next')
                 };
             },
 
-            // ----------------------------------------------------------------
-            // SETUP EVENT LISTENERS
-            // ----------------------------------------------------------------
-            setupEventListeners() {
-            // Marker events - Multiple detection methods for better compatibility
-            if (this.elements.marker) {
-                // Method 1: Standard AR.js events
-                this.elements.marker.addEventListener('markerFound', () => {
-                    console.log('🎯 Marker found (event)');
-                    this.onMarkerFound();
+            setupModelLoadListeners() {
+                // Listen for model load events
+                this.elements.fullPlantModel.addEventListener('model-loaded', () => {
+                    console.log('✅ Full plant model loaded');
+                    this.state.modelsLoaded = true;
                 });
                 
-                this.elements.marker.addEventListener('markerLost', () => {
-                    console.log('❌ Marker lost (event)');
-                    this.onMarkerLost();
+                this.elements.turbineFanModel.addEventListener('model-loaded', () => {
+                    console.log('✅ Turbine fan model loaded');
                 });
-            }
-            
-            // Method 2: Polling fallback (check marker visibility every 500ms)
-            this.markerCheckInterval = setInterval(() => {
-                if (this.elements.marker) {
-                    const isVisible = this.elements.marker.object3D.visible;
-                    
-                    // Marker just became visible
-                    if (isVisible && !this.state.markerFound) {
-                        console.log('🎯 Marker found (polling)');
-                        this.onMarkerFound();
-                    }
-                    // Marker just became hidden
-                    else if (!isVisible && this.state.markerFound) {
-                        console.log('❌ Marker lost (polling)');
-                        this.onMarkerLost();
-                    }
-                }
-            }, 500);
-                
-                // Start button
-                const startBtn = this.elements.startButton.querySelector('.btn-start');
-                if (startBtn) {
-                    startBtn.addEventListener('click', () => {
-                        this.startSimulation();
-                    });
-                }
-                
-                // Navigation buttons
-                if (this.elements.btnPrev) {
-                    this.elements.btnPrev.addEventListener('click', () => {
-                        this.previousScene();
-                    });
-                }
-                
-                if (this.elements.btnNext) {
-                    this.elements.btnNext.addEventListener('click', () => {
-                        this.nextScene();
-                    });
-                }
             },
 
-            // ----------------------------------------------------------------
-            // MARKER FOUND EVENT
-            // ----------------------------------------------------------------
-           onMarkerFound() {
-                console.log('🎯 Marker detected');
-                this.state.markerFound = true;
+            setupMarkerListeners() {
+                const marker = this.elements.marker;
                 
-                // Hide scanner instructions immediately
-                this.elements.scannerInstructions.classList.remove('visible');
-                
-                // Force show start button if simulation not started
-                if (!this.state.simulationStarted) {
-                    // Add small delay to ensure smooth transition
-                    setTimeout(() => {
-                        this.elements.startButton.classList.add('visible');
-                        this.elements.startButton.style.display = 'block';
-                    }, 300);
-                } else {
-                    // Show controls if simulation already started
-                    this.elements.statusBar.classList.add('visible');
-                    this.elements.infoCard.classList.add('visible');
-                    this.elements.navControls.classList.add('visible');
-                }
-            },
-
-            // ----------------------------------------------------------------
-            // MARKER LOST EVENT
-            // ----------------------------------------------------------------
-            onMarkerLost() {
-                console.log('❌ Marker lost');
-                this.state.markerFound = false;
-                
-                // Hide start button
-                this.elements.startButton.classList.remove('visible');
-                
-                // If simulation started, show scanner instructions
-                if (this.state.simulationStarted) {
-                    this.elements.statusBar.classList.remove('visible');
-                    this.elements.infoCard.classList.remove('visible');
-                    this.elements.navControls.classList.remove('visible');
-                    this.elements.scannerInstructions.classList.add('visible');
-                } else {
-                    // Show scanner instructions
-                    this.elements.scannerInstructions.classList.add('visible');
-                }
-            },
-
-            // ----------------------------------------------------------------
-            // START SIMULATION
-            // ----------------------------------------------------------------
-            startSimulation() {
-                console.log('▶️ Starting simulation...');
-                
-                // Unlock audio (required for mobile browsers)
-                AudioManager.unlock();
-                
-                // Update state
-                this.state.simulationStarted = true;
-                
-                // Hide start button
-                this.elements.startButton.classList.remove('visible');
-                
-                // Show UI controls
-                this.elements.statusBar.classList.add('visible');
-                this.elements.infoCard.classList.add('visible');
-                this.elements.navControls.classList.add('visible');
-                
-                // Load first scene
-                this.loadScene(0);
-            },
-
-            // ----------------------------------------------------------------
-            // LOAD SCENE BY INDEX
-            // ----------------------------------------------------------------
-            loadScene(sceneIndex) {
-                // Stop any playing audio
-                AudioManager.stop();
-                
-                // Get scene configuration
-                const scene = window.SCENE_CONFIG[sceneIndex];
-                if (!scene) {
-                    console.error('❌ Scene not found:', sceneIndex);
+                if (!marker) {
+                    console.error('❌ Marker element not found!');
                     return;
                 }
                 
-                console.log('📦 Loading scene:', scene.id, scene.title);
+                marker.addEventListener('markerFound', () => {
+                    console.log('✅ Marker found!');
+                    this.onMarkerFound();
+                });
                 
-                // Update state
-                this.state.currentSceneIndex = sceneIndex;
+                marker.addEventListener('markerLost', () => {
+                    console.log('❌ Marker lost!');
+                    this.onMarkerLost();
+                });
+            },
+
+            onMarkerFound() {
+                this.state.isMarkerVisible = true;
                 
-                // Update UI
-                this.updateSceneUI(scene);
+                this.elements.markerStatus.classList.add('active');
+                this.elements.markerText.textContent = 'Marker terdeteksi';
+                this.elements.statusBar.classList.add('visible');
                 
-                // Update 3D models
-                this.updateModels(scene);
+                this.elements.scannerInstructions.classList.remove('visible');
                 
-                // Update camera
-                this.updateCamera(scene.camera);
+                if (!this.state.isSimulationStarted) {
+                    this.elements.startButton.classList.add('visible');
+                } else {
+                    // 🔧 FIX: Show current scene model immediately
+                    this.showCurrentSceneModels();
+                }
+            },
+
+            onMarkerLost() {
+                this.state.isMarkerVisible = false;
                 
-                // Play audio (using AudioManager)
-                if (scene.audio) {
-                    setTimeout(() => {
-                        AudioManager.play(scene.audio);
-                        this.elements.audioIndicator.classList.add('visible');
-                        
-                        // Hide audio indicator when done (approximate)
-                        setTimeout(() => {
-                            this.elements.audioIndicator.classList.remove('visible');
-                        }, 15000); // Adjust based on typical audio length
-                    }, 500);
+                this.elements.markerStatus.classList.remove('active');
+                this.elements.markerText.textContent = 'Mencari marker...';
+                
+                if (!this.state.isSimulationStarted) {
+                    this.elements.startButton.classList.remove('visible');
+                    this.elements.scannerInstructions.classList.add('visible');
+                }
+            },
+
+            startSimulation() {
+                if (!this.state.isMarkerVisible) {
+                    console.warn('⚠️ Cannot start: marker not visible');
+                    return;
                 }
                 
-                // Update navigation buttons
+                console.log('🎬 Starting simulation...');
+                
+                this.state.isSimulationStarted = true;
+                
+                this.elements.startButton.classList.remove('visible');
+                this.elements.sceneCard.classList.add('visible');
+                this.elements.navControls.classList.add('visible');
+                
+                this.loadScene(0);
+            },
+
+            loadScene(sceneIndex) {
+                if (sceneIndex < 0 || sceneIndex >= this.state.totalScenes) {
+                    console.warn('⚠️ Invalid scene index:', sceneIndex);
+                    return;
+                }
+                
+                console.log(`🎬 Loading scene ${sceneIndex + 1}...`);
+                
+                this.stopAudio();
+                
+                this.state.currentSceneIndex = sceneIndex;
+                const scene = window.SCENE_CONFIG[sceneIndex];
+                
+                this.updateSceneUI(scene);
+                this.updateModels(scene);
+                
+                if (scene.camera) {
+                    this.updateCamera(scene.camera);
+                }
+                
+                this.playAudio(scene.audio);
                 this.updateNavButtons();
             },
 
-            // ----------------------------------------------------------------
-            // UPDATE SCENE UI
-            // ----------------------------------------------------------------
             updateSceneUI(scene) {
-                // Update scene counter
-                this.elements.sceneNumber.textContent = scene.id;
+                this.elements.sceneProgress.textContent = 
+                    `SCENE ${this.state.currentSceneIndex + 1} / ${this.state.totalScenes}`;
+                this.elements.sceneTitle.textContent = scene.title;
+                this.elements.sceneSubtitle.textContent = scene.subtitle;
                 
-                // Update info card
-                this.elements.infoTitle.textContent = scene.title;
-                this.elements.infoSubtitle.textContent = scene.subtitle;
-                this.elements.infoDescription.textContent = scene.description || this.getSceneDescription(scene);
+                const description = scene.description || this.generateSceneDescription(scene);
+                this.elements.sceneDescription.textContent = description;
             },
 
-            // ----------------------------------------------------------------
-            // GET SCENE DESCRIPTION (fallback)
-            // ----------------------------------------------------------------
-            getSceneDescription(scene) {
+            generateSceneDescription(scene) {
                 const descriptions = {
-                    1: "Selamat datang di Geothermal AR! Energi panas bumi adalah sumber energi terbarukan yang dihasilkan dari panas alami bumi.",
-                    2: "Di kedalaman bumi terdapat lapisan-lapisan dengan suhu sangat tinggi. Suhu inti bumi mencapai 5000°C!",
-                    3: "Uap panas bumi menggerakkan turbin yang menghasilkan listrik bersih dan ramah lingkungan.",
-                    4: "Sistem pendingin memastikan tidak ada limbah dan menciptakan siklus tertutup yang berkelanjutan.",
-                    5: "Indonesia memiliki 40% potensi panas bumi dunia - energi masa depan untuk generasi mendatang!"
+                    1: "Selamat datang di Geothermal AR! Energi panas bumi adalah sumber energi terbarukan yang dihasilkan dari panas alami bumi. Mari kita jelajahi bagaimana energi ini dimanfaatkan untuk menghasilkan listrik ramah lingkungan.",
+                    2: "Di kedalaman bumi terdapat lapisan-lapisan dengan suhu sangat tinggi. Kerak bumi, mantel, dan inti bumi menghasilkan panas luar biasa. Suhu inti bumi mencapai 5000°C - lebih panas dari permukaan matahari!",
+                    3: "Uap panas bumi bertekanan tinggi menggerakkan bilah turbin dengan kecepatan tinggi. Putaran turbin menggerakkan generator yang mengubah energi kinetik menjadi energi listrik. Satu turbin dapat menghasilkan hingga 100 megawatt listrik!",
+                    4: "Setelah melewati turbin, uap panas perlu didinginkan agar dapat digunakan kembali. Cooling tower menggunakan udara alami untuk mengondensasi uap menjadi air. Sistem ini memastikan tidak ada limbah dan menciptakan siklus tertutup yang ramah lingkungan.",
+                    5: "Pembangkit listrik tenaga panas bumi adalah solusi energi bersih masa depan. Tanpa emisi karbon, tersedia 24/7, dan tidak bergantung cuaca. Indonesia memiliki 40% potensi panas bumi dunia - saatnya memanfaatkan energi dari perut bumi untuk masa depan berkelanjutan!"
                 };
                 
                 return descriptions[scene.id] || scene.subtitle;
             },
 
-            // ----------------------------------------------------------------
-            // UPDATE 3D MODELS
-            // ----------------------------------------------------------------
             updateModels(scene) {
                 // Hide all models first
-                if (this.elements.fullPlantModel) {
-                    this.elements.fullPlantModel.setAttribute('visible', false);
-                }
-                if (this.elements.turbineFanModel) {
-                    this.elements.turbineFanModel.setAttribute('visible', false);
-                }
+                this.elements.fullPlantModel.setAttribute('visible', false);
+                this.elements.turbineFanModel.setAttribute('visible', false);
                 
-                // Show models based on scene components
+                // Show models based on scene
                 if (scene.components && scene.components.length > 0) {
                     scene.components.forEach(component => {
-                        if (component.name === 'full-geothermal-plant' && this.elements.fullPlantModel) {
+                        if (component.name === 'full-geothermal-plant') {
                             this.elements.fullPlantModel.setAttribute('visible', true);
                             this.updateModelTransform(
                                 this.elements.fullPlantModel,
@@ -1083,7 +630,7 @@ body {
                                 component.rotation,
                                 component.scale
                             );
-                        } else if (component.name === 'turbine-fan-animated' && this.elements.turbineFanModel) {
+                        } else if (component.name === 'turbine-fan-animated') {
                             this.elements.turbineFanModel.setAttribute('visible', true);
                             this.updateModelTransform(
                                 this.elements.turbineFanModel,
@@ -1092,45 +639,34 @@ body {
                                 component.scale
                             );
                             
-                            // Apply animation if specified
                             if (component.animation) {
-                                this.applyAnimation(
-                                    this.elements.turbineFanModel,
-                                    component.animation
-                                );
+                                this.applyAnimation(this.elements.turbineFanModel, component.animation);
                             }
                         }
                     });
                 }
             },
 
-            // ----------------------------------------------------------------
-            // UPDATE MODEL TRANSFORM
-            // ----------------------------------------------------------------
-            updateModelTransform(model, position, rotation, scale) {
-                if (position) {
-                    model.setAttribute('position', position);
-                }
-                if (rotation) {
-                    model.setAttribute('rotation', rotation);
-                }
-                if (scale) {
-                    model.setAttribute('scale', scale);
+            showCurrentSceneModels() {
+                const scene = window.SCENE_CONFIG[this.state.currentSceneIndex];
+                if (scene) {
+                    this.updateModels(scene);
                 }
             },
 
-            // ----------------------------------------------------------------
-            // APPLY ANIMATION TO MODEL
-            // ----------------------------------------------------------------
+            updateModelTransform(model, position, rotation, scale) {
+                if (position) model.setAttribute('position', position);
+                if (rotation) model.setAttribute('rotation', rotation);
+                if (scale) model.setAttribute('scale', scale);
+            },
+
             applyAnimation(model, animationConfig) {
                 if (animationConfig.type === 'rotation') {
                     const axis = animationConfig.axis || 'y';
                     const speed = animationConfig.speed || 1.0;
                     
-                    // Remove existing animation
                     model.removeAttribute('animation');
                     
-                    // Apply new rotation animation
                     model.setAttribute('animation', {
                         property: `rotation.${axis}`,
                         to: 360,
@@ -1141,16 +677,12 @@ body {
                 }
             },
 
-            // ----------------------------------------------------------------
-            // UPDATE CAMERA POSITION
-            // ----------------------------------------------------------------
             updateCamera(cameraConfig) {
                 const camera = document.querySelector('a-camera');
                 if (!camera || !cameraConfig.position) return;
                 
                 const duration = cameraConfig.duration || 2000;
                 
-                // Animate camera position
                 camera.setAttribute('animation', {
                     property: 'position',
                     to: cameraConfig.position,
@@ -1159,9 +691,38 @@ body {
                 });
             },
 
-            // ----------------------------------------------------------------
-            // NAVIGATION CONTROLS
-            // ----------------------------------------------------------------
+            playAudio(audioPath) {
+                if (!audioPath) return;
+                
+                this.currentAudio = new Audio(audioPath);
+                this.elements.audioIndicator.classList.add('visible');
+                
+                this.currentAudio.play()
+                    .then(() => {
+                        console.log('🔊 Audio playing:', audioPath);
+                        this.state.audioPlaying = true;
+                    })
+                    .catch(error => {
+                        console.error('❌ Audio failed:', error);
+                        this.elements.audioIndicator.classList.remove('visible');
+                    });
+                
+                this.currentAudio.addEventListener('ended', () => {
+                    this.elements.audioIndicator.classList.remove('visible');
+                    this.state.audioPlaying = false;
+                });
+            },
+
+            stopAudio() {
+                if (this.currentAudio) {
+                    this.currentAudio.pause();
+                    this.currentAudio.currentTime = 0;
+                    this.currentAudio = null;
+                    this.state.audioPlaying = false;
+                    this.elements.audioIndicator.classList.remove('visible');
+                }
+            },
+
             nextScene() {
                 const nextIndex = this.state.currentSceneIndex + 1;
                 if (nextIndex < this.state.totalScenes) {
@@ -1176,28 +737,11 @@ body {
                 }
             },
 
-            // ----------------------------------------------------------------
-            // UPDATE NAVIGATION BUTTONS
-            // ----------------------------------------------------------------
             updateNavButtons() {
-                // Disable previous button on first scene
-                if (this.state.currentSceneIndex === 0) {
-                    this.elements.btnPrev.disabled = true;
-                } else {
-                    this.elements.btnPrev.disabled = false;
-                }
-                
-                // Disable next button on last scene
-                if (this.state.currentSceneIndex === this.state.totalScenes - 1) {
-                    this.elements.btnNext.disabled = true;
-                } else {
-                    this.elements.btnNext.disabled = false;
-                }
+                this.elements.btnPrev.disabled = this.state.currentSceneIndex === 0;
+                this.elements.btnNext.disabled = this.state.currentSceneIndex === this.state.totalScenes - 1;
             },
 
-            // ----------------------------------------------------------------
-            // UI HELPER METHODS
-            // ----------------------------------------------------------------
             hideLoading() {
                 this.elements.loadingScreen.classList.add('hidden');
             },
@@ -1205,56 +749,11 @@ body {
             showScannerInstructions() {
                 this.elements.scannerInstructions.classList.add('visible');
                 this.elements.statusBar.classList.add('visible');
-            },
-
-            // ----------------------------------------------------------------
-            // FORCE CANVAS RESIZE (Mobile Fix)
-            // ----------------------------------------------------------------
-            forceCanvasResize() {
-                const scene = document.querySelector('a-scene');
-                if (!scene) return;
-                
-                const canvas = scene.querySelector('canvas');
-                const video = document.querySelector('video');
-                
-                const width = window.innerWidth;
-                const height = window.innerHeight;
-                
-                if (canvas) {
-                    canvas.style.width = width + 'px';
-                    canvas.style.height = height + 'px';
-                    canvas.width = width;
-                    canvas.height = height;
-                }
-                
-                if (video) {
-                    video.style.width = width + 'px';
-                    video.style.height = height + 'px';
-                }
-                
-                console.log('📐 Canvas resized:', width, 'x', height);
             }
-
         };
 
-        // ----------------------------------------------------------------
-        // AUTO-INITIALIZE ON DOM READY
-        // ----------------------------------------------------------------
-       document.addEventListener('DOMContentLoaded', () => {
-            // Wait for scene-config.js and A-Frame to load
-            setTimeout(() => {
-                ARController.init();
-            }, 500);
-        });
-
-        // Also try initializing on window load as fallback
-        window.addEventListener('load', () => {
-            if (!ARController.state.markerFound) {
-                console.log('🔄 Reinitializing from window.load');
-                setTimeout(() => {
-                    ARController.init();
-                }, 300);
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => ARController.init(), 100);
         });
     </script>
 </body>
