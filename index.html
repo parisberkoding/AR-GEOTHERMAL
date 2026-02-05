@@ -26,26 +26,51 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            background: #000;
-        }
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: fixed;
+    background: #000;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
 
         /* ===================================================================
            AR SCENE CONTAINER
            =================================================================== */
-        #ar-scene {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
+#ar-scene {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 1;
+    overflow: hidden;
+}
+
+/* Force A-Frame canvas to be full screen */
+#ar-scene canvas {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+}
+
+/* Force video element (camera feed) to be full screen */
+#ar-scene video {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    object-fit: cover !important;
+}
 
         /* ===================================================================
            UI OVERLAY CONTAINER
@@ -487,6 +512,53 @@
                 font-size: 22px;
             }
         }
+
+        /* ===================================================================
+   MOBILE CAMERA FIX - Force full screen on all devices
+   =================================================================== */
+@supports (-webkit-touch-callout: none) {
+    /* iOS Safari specific fixes */
+    #ar-scene,
+    #ar-scene canvas,
+    #ar-scene video {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        min-height: -webkit-fill-available !important;
+    }
+    
+    body {
+        height: -webkit-fill-available;
+    }
+}
+
+/* Android Chrome fixes */
+@media screen and (max-width: 768px) {
+    #ar-scene {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+    }
+    
+    #ar-scene canvas,
+    #ar-scene video {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        min-width: 100vw !important;
+        min-height: 100vh !important;
+        width: auto !important;
+        height: auto !important;
+        object-fit: cover !important;
+    }
+}
     </style>
 </head>
 <body>
@@ -496,11 +568,12 @@
     <a-scene
         id="ar-scene"
         embedded
-        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; trackingMethod: best;"
+        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; trackingMethod: best; cameraParametersUrl: data:text/plain;charset=utf-8,;"
         vr-mode-ui="enabled: false"
-        renderer="logarithmicDepthBuffer: true; precision: medium; antialias: true; alpha: true;"
-        device-orientation-permission-ui="enabled: false">
-        
+        renderer="logarithmicDepthBuffer: true; precision: medium; antialias: true; alpha: true; colorManagement: true;"
+        device-orientation-permission-ui="enabled: false"
+        loading-screen="enabled: false">
+            
         <!-- AR Marker (Hiro) -->
         <a-marker preset="hiro" id="hiro-marker" emitevents="true" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
             <!-- Full Geothermal Plant Model -->
@@ -715,6 +788,20 @@
                 
                 // Cache DOM elements
                 this.cacheElements();
+
+                // Force canvas resize for mobile
+    this.forceCanvasResize();
+    
+    // Re-resize on orientation change
+    window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+            this.forceCanvasResize();
+        }, 300);
+    });
+    
+    window.addEventListener('resize', () => {
+        this.forceCanvasResize();
+    });
                 
                 // Wait for A-Frame scene to fully load before setting up events
                 const scene = document.querySelector('a-scene');
@@ -1118,7 +1205,36 @@
             showScannerInstructions() {
                 this.elements.scannerInstructions.classList.add('visible');
                 this.elements.statusBar.classList.add('visible');
+            },
+
+            // ----------------------------------------------------------------
+            // FORCE CANVAS RESIZE (Mobile Fix)
+            // ----------------------------------------------------------------
+            forceCanvasResize() {
+                const scene = document.querySelector('a-scene');
+                if (!scene) return;
+                
+                const canvas = scene.querySelector('canvas');
+                const video = document.querySelector('video');
+                
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                
+                if (canvas) {
+                    canvas.style.width = width + 'px';
+                    canvas.style.height = height + 'px';
+                    canvas.width = width;
+                    canvas.height = height;
+                }
+                
+                if (video) {
+                    video.style.width = width + 'px';
+                    video.style.height = height + 'px';
+                }
+                
+                console.log('📐 Canvas resized:', width, 'x', height);
             }
+
         };
 
         // ----------------------------------------------------------------
