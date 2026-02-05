@@ -18,6 +18,10 @@ assets/test/
 assets/raw/
 glb/*.glb
 glb/*.gltf
+glb/*.csv
+glb/*.xlsx
+glb/*.xls
+glb/*.pdf
 pipe_system.glb
 EarthLayers.glb
 city_model.glb

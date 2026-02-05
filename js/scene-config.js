@@ -17,7 +17,7 @@ window.SCENE_CONFIG = [
         id: 1,
         title: "Welcome",
         subtitle: "Energi Bersih dari Perut Bumi",
-        audio: "assets/audio/Intro.mp3",
+        audio: "assets/audio/intro.mp3",
         
         // Scene description for info card
         description: "Selamat datang di Geothermal AR! Energi panas bumi adalah sumber energi terbarukan yang dihasilkan dari panas alami bumi. Mari kita jelajahi bagaimana energi ini dimanfaatkan untuk menghasilkan listrik ramah lingkungan.",
@@ -25,7 +25,7 @@ window.SCENE_CONFIG = [
         components: [
             {
                 name: "full-geothermal-plant",
-                path: "assets/glb/FullVersion.glb",
+                path: "assets/FullVersion.glb",
                 position: { x: 0, y: 0, z: 0 },
                 rotation: { x: 0, y: 0, z: 0 },
                 scale: { x: 1, y: 1, z: 1 },
@@ -46,14 +46,14 @@ window.SCENE_CONFIG = [
         id: 2,
         title: "Lapisan Bumi",
         subtitle: "Dapur Panas di Perut Bumi",
-        audio: "assets/audio/Earth Layer.mp3",
+        audio: "assets/audio/earth_layer.mp3",
         
         description: "Di kedalaman bumi terdapat lapisan-lapisan dengan suhu sangat tinggi. Kerak bumi, mantel, dan inti bumi menghasilkan panas luar biasa. Suhu inti bumi mencapai 5000°C - lebih panas dari permukaan matahari!",
         
         components: [
             {
                 name: "full-geothermal-plant",
-                path: "assets/glb/FullVersion.glb",
+                path: "assets/FullVersion.glb",
                 position: { x: 0, y: 0, z: 0 },
                 rotation: { x: 0, y: 0, z: 0 },
                 scale: { x: 1, y: 1, z: 1 },
@@ -74,7 +74,7 @@ window.SCENE_CONFIG = [
         id: 3,
         title: "Turbin Pembangkit",
         subtitle: "Mengubah Uap Menjadi Listrik",
-        audio: "assets/audio/Turbine.mp3",
+        audio: "assets/audio/turbine.mp3",
         
         description: "Uap panas bumi bertekanan tinggi menggerakkan bilah turbin dengan kecepatan tinggi. Putaran turbin menggerakkan generator yang mengubah energi kinetik menjadi energi listrik. Satu turbin dapat menghasilkan hingga 100 megawatt listrik!",
         
@@ -82,7 +82,7 @@ window.SCENE_CONFIG = [
             // Base model (static)
             {
                 name: "full-geothermal-plant",
-                path: "assets/glb/FullVersion.glb",
+                path: "assets/FullVersion.glb",
                 position: { x: 0, y: 0, z: 0 },
                 rotation: { x: 0, y: 0, z: 0 },
                 scale: { x: 1, y: 1, z: 1 },
@@ -91,7 +91,7 @@ window.SCENE_CONFIG = [
             // Animated turbine fan (overlay di posisi yang sama)
             {
                 name: "turbine-fan-animated",
-                path: "assets/glb/Turbine_Fan.glb",
+                path: "assets/Turbine_Fan.glb",
                 position: { x: 0, y: 0, z: 0 },  // 🔧 Adjust sesuai posisi turbine di FullVersion.glb
                 rotation: { x: 0, y: 0, z: 0 },
                 scale: { x: 1, y: 1, z: 1 },
@@ -117,7 +117,7 @@ window.SCENE_CONFIG = [
         id: 4,
         title: "Menara Pendingin",
         subtitle: "Sistem Pendingin & Kondensasi",
-        audio: "assets/audio/Cooling Tower.mp3",
+        audio: "assets/cooling_tower.mp3",
         
         description: "Setelah melewati turbin, uap panas perlu didinginkan agar dapat digunakan kembali. Cooling tower menggunakan udara alami untuk mengondensasi uap menjadi air. Sistem ini memastikan tidak ada limbah dan menciptakan siklus tertutup yang ramah lingkungan.",
         
@@ -145,14 +145,14 @@ window.SCENE_CONFIG = [
         id: 5,
         title: "Masa Depan Hijau",
         subtitle: "Energi Berkelanjutan untuk Generasi Mendatang",
-        audio: "assets/audio/Outro.mp3",
+        audio: "assets/audio/outro.mp3",
         
         description: "Pembangkit listrik tenaga panas bumi adalah solusi energi bersih masa depan. Tanpa emisi karbon, tersedia 24/7, dan tidak bergantung cuaca. Indonesia memiliki 40% potensi panas bumi dunia - saatnya memanfaatkan energi dari perut bumi untuk masa depan berkelanjutan!",
         
         components: [
             {
                 name: "full-geothermal-plant",
-                path: "assets/glb/FullVersion.glb",
+                path: "assets/FullVersion.glb",
                 position: { x: 0, y: 0, z: 0 },
                 rotation: { x: 0, y: 0, z: 0 },
                 scale: { x: 1, y: 1, z: 1 },
@@ -160,7 +160,7 @@ window.SCENE_CONFIG = [
             },
             {
                 name: "turbine-fan-animated",
-                path: "assets/glb/Turbine_Fan.glb",
+                path: "assets/Turbine_Fan.glb",
                 position: { x: 0, y: 0, z: 0 },
                 rotation: { x: 0, y: 0, z: 0 },
                 scale: { x: 1, y: 1, z: 1 },
